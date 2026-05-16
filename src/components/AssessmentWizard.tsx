@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ChevronRight, 
-  ChevronLeft, 
-  AlertCircle, 
-  CheckCircle2, 
-  GraduationCap, 
-  Home, 
-  HeartPulse, 
+import {
+  ChevronRight,
+  ChevronLeft,
+  AlertCircle,
+  CheckCircle2,
+  GraduationCap,
+  Home,
+  HeartPulse,
   AlertTriangle,
   Info,
   History,
   FileText,
-  Users
+  Users,
+  ShieldCheck
 } from 'lucide-react';
 import { UserFacts, StudentStatus, Programme, StudentType, IncomeCategory, AidNeed, DisasterCaseType, FamilyMemberType, DocumentStatus, ApplicationStatus } from '../types';
 
@@ -46,6 +47,30 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
   const nextStep = () => setStep(s => s + 1);
   const prevStep = () => setStep(s => s - 1);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't navigate if user is typing in an input
+      const isInput = ['INPUT', 'SELECT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName);
+      
+      if (e.key === 'Enter') {
+        if (step < 5) {
+          nextStep();
+        } else {
+          onComplete(facts);
+        }
+      }
+      
+      if (e.key === 'Backspace' && !isInput) {
+        if (step > 1) {
+          prevStep();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [step, facts, onComplete]);
+
   const updateFact = <K extends keyof UserFacts>(key: K, value: UserFacts[K]) => {
     setFacts(prev => ({ ...prev, [key]: value }));
   };
@@ -54,65 +79,69 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-slate-800 flex items-center gap-2">
-              <GraduationCap className="text-indigo-600" />
+          <div className="space-y-8">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <GraduationCap size={24} className="text-slate-400" />
               Basic Academic Status
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Student Status</label>
-                <div className="flex gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Student Status</label>
+                <div className="flex bg-slate-50 p-1.5 rounded-2xl gap-1">
                   {['Active', 'Not Active'].map((v) => (
                     <button
                       key={v}
                       onClick={() => updateFact('studentStatus', v as StudentStatus)}
-                      className={`flex-1 py-2 px-4 rounded-lg border transition-all ${
-                        facts.studentStatus === v ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'
-                      }`}
+                      className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${facts.studentStatus === v ? 'bg-[#9A91ED] text-white shadow-md' : 'text-slate-400 hover:text-slate-600'
+                        }`}
                     >
                       {v}
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Programme</label>
-                <select
-                  value={facts.programme}
-                  onChange={(e) => updateFact('programme', e.target.value as Programme)}
-                  className="w-full p-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                >
-                  <option value="Diploma">Diploma</option>
-                  <option value="Degree">Degree</option>
-                  <option value="Other">Other (Master/PHD/etc)</option>
-                </select>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Programme</label>
+                <div className="relative">
+                  <select
+                    value={facts.programme}
+                    onChange={(e) => updateFact('programme', e.target.value as Programme)}
+                    className="w-full p-3 bg-white border border-slate-200 rounded-xl appearance-none focus:ring-2 focus:ring-purple-200 focus:outline-none text-slate-700 font-medium"
+                  >
+                    <option value="Diploma">Diploma</option>
+                    <option value="Degree">Degree</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <ChevronRight className="rotate-90" size={16} />
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Student Type</label>
-                <div className="flex gap-2">
+
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Student Type</label>
+                <div className="flex bg-slate-50 p-1.5 rounded-2xl gap-1">
                   {['Local', 'International'].map((v) => (
                     <button
                       key={v}
                       onClick={() => updateFact('studentType', v as StudentType)}
-                      className={`flex-1 py-2 px-4 rounded-lg border transition-all ${
-                        facts.studentType === v ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'
-                      }`}
+                      className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${facts.studentType === v ? 'bg-[#9A91ED] text-white shadow-md' : 'text-slate-400 hover:text-slate-600'
+                        }`}
                     >
                       {v}
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">CGPA (leave unknown if unsure)</label>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">CGPA (leave unknown if unsure)</label>
                 <input
                   type="number"
                   step="0.01"
-                  min="0"
-                  max="4.0"
                   placeholder="e.g. 3.5"
-                  className="w-full p-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  className="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-200 focus:outline-none text-slate-700 font-medium placeholder:text-slate-300"
                   onChange={(e) => updateFact('cgpa', e.target.value ? parseFloat(e.target.value) : 'Unknown')}
                 />
               </div>
@@ -121,218 +150,257 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
         );
       case 2:
         return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-slate-800 flex items-center gap-2">
-              <Users className="text-emerald-600" />
+          <div className="space-y-8">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <Users size={24} className="text-slate-400" />
               Financial Background
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Income Category (SSM/LHDN)</label>
-                <select
-                  value={facts.incomeCategory}
-                  onChange={(e) => updateFact('incomeCategory', e.target.value as IncomeCategory)}
-                  className="w-full p-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                >
-                  <option value="B40">B40 (Low Income)</option>
-                  <option value="M40">M40 (Medium Income)</option>
-                  <option value="T20">T20 (High Income)</option>
-                  <option value="Unknown">Unknown</option>
-                </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Income Category (SSM/LHDN)</label>
+                <div className="relative">
+                  <select
+                    value={facts.incomeCategory}
+                    onChange={(e) => updateFact('incomeCategory', e.target.value as IncomeCategory)}
+                    className="w-full p-3 bg-white border border-slate-200 rounded-xl appearance-none focus:ring-2 focus:ring-purple-200 focus:outline-none text-slate-700 font-medium"
+                  >
+                    <option value="B40">B40 (Low Income)</option>
+                    <option value="M40">M40 (Medium Income)</option>
+                    <option value="T20">T20 (High Income)</option>
+                    <option value="Unknown">Unknown</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <ChevronRight className="rotate-90" size={16} />
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Monthly Household Income (RM)</label>
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Monthly Household Income (RM)</label>
                 <input
                   type="number"
                   placeholder="e.g. 4500"
-                  className="w-full p-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  className="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-200 focus:outline-none text-slate-700 font-medium placeholder:text-slate-300"
                   onChange={(e) => updateFact('householdIncome', e.target.value ? parseInt(e.target.value) : 'Unknown')}
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">Primary Support Need</label>
-                <select
-                  value={facts.aidNeed}
-                  onChange={(e) => updateFact('aidNeed', e.target.value as AidNeed)}
-                  className="w-full p-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                >
-                  <option value="None">No specific need</option>
-                  <option value="Food">Food / Coupons</option>
-                  <option value="Internet">Internet / Data</option>
-                  <option value="Special Case">Special Financial Case</option>
-                  <option value="Disaster">Disaster Relief</option>
-                  <option value="Scholarship">Scholarship Referral</option>
-                  <option value="Counseling">Counseling / Emotional Support</option>
-                  <option value="Accommodation">Accommodation Issues</option>
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <input
-                   type="checkbox"
-                   checked={facts.hasPTPTN}
-                   onChange={(e) => updateFact('hasPTPTN', e.target.checked)}
-                   className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500"
-                />
-                <label className="text-sm font-medium text-slate-700">Has existing PTPTN loan?</label>
-              </div>
-              <div className="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <input
-                   type="checkbox"
-                   checked={facts.hasScholarship}
-                   onChange={(e) => updateFact('hasScholarship', e.target.checked)}
-                   className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500"
-                />
-                <label className="text-sm font-medium text-slate-700">Has existing scholarship?</label>
               </div>
             </div>
           </div>
         );
       case 3:
         return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-slate-800 flex items-center gap-2">
-              <AlertTriangle className="text-amber-600" />
-              Emergency & Special Situations
+          <div className="space-y-8">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <HeartPulse size={24} className="text-slate-400" />
+              Primary Needs & Current Aid
             </h2>
-            <div className="space-y-4">
-              <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 flex items-start gap-3">
-                 <Info className="text-amber-600 w-5 h-5 mt-0.5 shrink-0" />
-                 <p className="text-sm text-amber-800">
-                   If you are facing an urgent emergency or disaster, please fill this section carefully.
-                 </p>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <input
-                   type="checkbox"
-                   id="emergency"
-                   checked={facts.emergencyCase}
-                   onChange={(e) => updateFact('emergencyCase', e.target.checked)}
-                   className="w-6 h-6 rounded text-indigo-600 focus:ring-indigo-500"
-                />
-                <label htmlFor="emergency" className="text-lg font-medium text-slate-800">This is an urgent emergency/disaster case</label>
-              </div>
-
-              {facts.emergencyCase && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white border border-slate-200 rounded-xl"
-                >
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-slate-700">Disaster Category</label>
-                    <select
-                      value={facts.disasterCaseType}
-                      onChange={(e) => updateFact('disasterCaseType', e.target.value as DisasterCaseType)}
-                      className="w-full p-2 bg-white border border-slate-200 rounded-lg"
-                    >
-                      <option value="None">None</option>
-                      <option value="Death of Student">Death of Student</option>
-                      <option value="Death of Family Member">Death of Family Member</option>
-                      <option value="Serious Accident">Serious Accident</option>
-                      <option value="Natural Disaster">Natural Disaster (Flood/Storm)</option>
-                      <option value="Fire">Fire Case</option>
-                    </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Type of Aid Needed</label>
+                <div className="relative">
+                  <select
+                    value={facts.aidNeed}
+                    onChange={(e) => updateFact('aidNeed', e.target.value as AidNeed)}
+                    className="w-full p-3 bg-white border border-slate-200 rounded-xl appearance-none focus:ring-2 focus:ring-purple-200 focus:outline-none text-slate-700 font-medium"
+                  >
+                    <option value="None">None (Just screening)</option>
+                    <option value="Food">Food Coupon Assistance</option>
+                    <option value="Internet">Internet/Data Subscription</option>
+                    <option value="Scholarship">Scholarship Opportunity</option>
+                    <option value="Disaster">Disaster/Emergency Relief</option>
+                    <option value="Special Case">Special Financial Case</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <ChevronRight className="rotate-90" size={16} />
                   </div>
-
-                  {facts.disasterCaseType === 'Death of Family Member' && (
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700">Relationship</label>
-                      <select
-                        value={facts.familyMemberType}
-                        onChange={(e) => updateFact('familyMemberType', e.target.value as FamilyMemberType)}
-                        className="w-full p-2 bg-white border border-slate-200 rounded-lg"
-                      >
-                        <option value="None">Select...</option>
-                        <option value="Mother">Mother</option>
-                        <option value="Father">Father</option>
-                        <option value="Guardian">Guardian</option>
-                        <option value="Child">Child</option>
-                        <option value="Other">Other</option>
-                      </select>
+                </div>
+              </div>
+              <div className="space-y-4 pt-6">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${facts.hasPTPTN ? 'bg-[#9A91ED] border-[#9A91ED]' : 'bg-white border-slate-200'}`}>
+                    {facts.hasPTPTN && <CheckCircle2 size={14} className="text-white" />}
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={facts.hasPTPTN}
+                    onChange={(e) => updateFact('hasPTPTN', e.target.checked)}
+                  />
+                  <span className="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors">Already have PTPTN loan?</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${facts.hasScholarship ? 'bg-[#9A91ED] border-[#9A91ED]' : 'bg-white border-slate-200'}`}>
+                    {facts.hasScholarship && <CheckCircle2 size={14} className="text-white" />}
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={facts.hasScholarship}
+                    onChange={(e) => updateFact('hasScholarship', e.target.checked)}
+                  />
+                  <span className="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors">Already have a scholarship?</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div className="space-y-8">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <AlertTriangle size={24} className="text-slate-400" />
+              Urgent & Well-being Status
+            </h2>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className={`w-12 h-6 rounded-full transition-all relative ${facts.emergencyCase ? 'bg-[#9A91ED]' : 'bg-slate-200'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${facts.emergencyCase ? 'left-7' : 'left-1'}`} />
                     </div>
-                  )}
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      checked={facts.emergencyCase}
+                      onChange={(e) => updateFact('emergencyCase', e.target.checked)}
+                    />
+                    <span className="text-sm font-bold text-slate-700">Urgent Emergency Case?</span>
+                  </label>
 
-                  {(facts.disasterCaseType === 'Natural Disaster' || facts.disasterCaseType === 'Fire') && (
-                    <div className="flex items-center gap-2 py-4">
+                  {facts.emergencyCase && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 pl-4 border-l-2 border-purple-100">
+                      <div className="space-y-2">
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Type of Emergency</label>
+                        <select
+                          value={facts.disasterCaseType}
+                          onChange={(e) => updateFact('disasterCaseType', e.target.value as DisasterCaseType)}
+                          className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-purple-100 focus:outline-none"
+                        >
+                          <option value="None">None</option>
+                          <option value="Death of Student">Death of Student</option>
+                          <option value="Death of Family Member">Death of Family Member</option>
+                          <option value="Serious Accident">Serious Accident</option>
+                          <option value="Natural Disaster">Natural Disaster</option>
+                          <option value="Fire">Fire Case</option>
+                        </select>
+                      </div>
+
+                      {facts.disasterCaseType === 'Death of Family Member' && (
+                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="space-y-2">
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Relationship</label>
+                          <select
+                            value={facts.familyMemberType}
+                            onChange={(e) => updateFact('familyMemberType', e.target.value as FamilyMemberType)}
+                            className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-purple-100 focus:outline-none"
+                          >
+                            <option value="None">Select...</option>
+                            <option value="Mother">Mother</option>
+                            <option value="Father">Father</option>
+                            <option value="Guardian">Guardian</option>
+                            <option value="Child">Child</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  )}
+                </div>
+
+                <div className="space-y-6">
+                   <div className="space-y-4">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <div className={`w-12 h-6 rounded-full transition-all relative ${facts.stressOrEmotionalIssue ? 'bg-[#9A91ED]' : 'bg-slate-200'}`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${facts.stressOrEmotionalIssue ? 'left-7' : 'left-1'}`} />
+                      </div>
                       <input
                         type="checkbox"
-                        checked={facts.propertyLoss}
-                        onChange={(e) => updateFact('propertyLoss', e.target.checked)}
-                        className="w-5 h-5 rounded"
-                      />
-                      <label className="text-sm font-medium text-slate-700">Was there significant property loss?</label>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <HeartPulse className="text-rose-500 w-5 h-5" />
-                    <span className="font-medium text-slate-800">Support Needs</span>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
+                        className="hidden"
                         checked={facts.stressOrEmotionalIssue}
                         onChange={(e) => updateFact('stressOrEmotionalIssue', e.target.checked)}
                       />
-                      Facing stress/emotional issues?
+                      <span className="text-sm font-bold text-slate-700">Stress/Emotional Issue?</span>
                     </label>
+
                     {facts.stressOrEmotionalIssue && (
-                      <label className="flex items-center gap-2 text-sm ml-6">
-                        <input
-                          type="checkbox"
-                          checked={facts.academicProblemRelatedToStress}
-                          onChange={(e) => updateFact('academicProblemRelatedToStress', e.target.checked)}
-                        />
-                        Affecting academic performance?
-                      </label>
+                      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="pl-6 pt-2">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className={`w-10 h-5 rounded-full transition-all relative ${facts.academicProblemRelatedToStress ? 'bg-emerald-400' : 'bg-slate-200'}`}>
+                              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${facts.academicProblemRelatedToStress ? 'left-5.5' : 'left-0.5'}`} />
+                          </div>
+                          <input
+                            type="checkbox"
+                            className="hidden"
+                            checked={facts.academicProblemRelatedToStress}
+                            onChange={(e) => updateFact('academicProblemRelatedToStress', e.target.checked)}
+                          />
+                          <span className="text-xs font-bold text-slate-500">Affecting Academic Performance?</span>
+                        </label>
+                      </motion.div>
                     )}
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={facts.accommodationIssue}
-                        onChange={(e) => updateFact('accommodationIssue', e.target.checked)}
-                      />
-                      Facing accommodation problems?
-                    </label>
                   </div>
-                </div>
-                
-                <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col gap-3">
-                   <div className="flex items-center gap-2">
-                    <FileText className="text-indigo-600 w-5 h-5" />
-                    <span className="font-medium text-slate-800">Application Status</span>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-xs uppercase tracking-wider text-indigo-600 font-bold">Supporting Documents</label>
-                    <select
-                      value={facts.supportingDocumentStatus}
-                      onChange={(e) => updateFact('supportingDocumentStatus', e.target.value as DocumentStatus)}
-                      className="w-full p-1.5 text-sm bg-white border border-indigo-200 rounded-lg"
-                    >
-                      <option value="Not Submitted">Not Submitted</option>
-                      <option value="Incomplete">Incomplete</option>
-                      <option value="Complete">Complete (Ready to scan/submit)</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-xs uppercase tracking-wider text-indigo-600 font-bold">Official Application Form</label>
-                    <select
-                      value={facts.applicationFormStatus}
-                      onChange={(e) => updateFact('applicationFormStatus', e.target.value as ApplicationStatus)}
-                      className="w-full p-1.5 text-sm bg-white border border-indigo-200 rounded-lg"
-                    >
-                      <option value="Not Submitted">Not Submitted</option>
-                      <option value="Submitted">Already Submitted to TD HEP</option>
-                    </select>
-                  </div>
+                  
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className={`w-12 h-6 rounded-full transition-all relative ${facts.accommodationIssue ? 'bg-[#9A91ED]' : 'bg-slate-200'}`}>
+                        <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${facts.accommodationIssue ? 'left-7' : 'left-1'}`} />
+                    </div>
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      checked={facts.accommodationIssue}
+                      onChange={(e) => updateFact('accommodationIssue', e.target.checked)}
+                    />
+                    <span className="text-sm font-bold text-slate-700">Accommodation Problem?</span>
+                  </label>
                 </div>
               </div>
+            </div>
+          </div>
+        );
+      case 5:
+        return (
+          <div className="space-y-8">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+              <FileText size={24} className="text-slate-400" />
+              Submission & Final Status
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+              <div className="space-y-4">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Supporting Documents Status</label>
+                <div className="grid grid-cols-1 gap-2">
+                   {['Not Submitted', 'Incomplete', 'Complete'].map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => updateFact('supportingDocumentStatus', v as DocumentStatus)}
+                      className={`w-full py-3 px-4 rounded-xl text-sm font-bold text-left transition-all ${facts.supportingDocumentStatus === v ? 'bg-[#9A91ED] text-white shadow-md' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                        }`}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">Official Application Form</label>
+                <div className="grid grid-cols-1 gap-2">
+                   {['Not Submitted', 'Submitted'].map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => updateFact('applicationFormStatus', v as ApplicationStatus)}
+                      className={`w-full py-3 px-4 rounded-xl text-sm font-bold text-left transition-all ${facts.applicationFormStatus === v ? 'bg-[#9A91ED] text-white shadow-md' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                        }`}
+                    >
+                      {v === 'Submitted' ? 'Already Submitted to Office' : v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white shrink-0">
+                    <ShieldCheck size={20} />
+                </div>
+                <p className="text-xs font-medium text-emerald-800 leading-relaxed">
+                    Ready to generate your referral. The inference engine will now process your facts against the 48-rule knowledge base.
+                </p>
             </div>
           </div>
         );
@@ -341,21 +409,20 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
     }
   };
 
-  const stepsCount = 3;
-
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
-      <div className="bg-indigo-600 px-8 py-6 flex justify-between items-center text-white">
-        <div>
-          <h1 className="text-xl font-bold">Eligibility Assessment</h1>
-          <p className="text-indigo-100 text-sm">Please answer accurately for correct referral.</p>
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/40 flex flex-col min-h-[500px]">
+      {/* Wizard Header (Mockup Style) */}
+      <div className="bg-[#9A91ED] px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <div className="space-y-1">
+          <h2 className="text-xl font-bold text-white tracking-tight">Eligibility Assessment</h2>
+          <p className="text-purple-100 text-xs font-medium">Please answer accurately for correct referral.</p>
         </div>
-        <div className="text-indigo-200 text-sm font-medium">
-          Step {step} of {stepsCount}
+        <div className="text-purple-100 text-xs font-bold uppercase tracking-widest opacity-80">
+          Step {step} of 5
         </div>
       </div>
-      
-      <div className="p-8 min-h-[400px]">
+
+      <div className="flex-1 p-8 md:p-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -369,35 +436,37 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
         </AnimatePresence>
       </div>
 
-      <div className="p-8 border-t border-slate-100 flex justify-between items-center bg-slate-50/50">
+      {/* Wizard Footer Actions */}
+      <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
         <button
           onClick={prevStep}
           disabled={step === 1}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
-            step === 1 ? 'opacity-0 cursor-default' : 'text-slate-600 hover:bg-slate-200'
-          }`}
+          className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-colors ${step === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-400 hover:text-slate-600'
+            }`}
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft size={16} />
           Back
         </button>
-        
-        {step < stepsCount ? (
-          <button
-            onClick={nextStep}
-            className="flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
-          >
-            Next Step
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        ) : (
-          <button
-            onClick={() => onComplete(facts)}
-            className="flex items-center gap-2 px-8 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
-          >
-            Run Expert Inference
-            <CheckCircle2 className="w-5 h-5" />
-          </button>
-        )}
+
+        <div className="flex gap-4">
+          {step < 5 ? (
+            <button
+              onClick={nextStep}
+              className="px-8 py-3 bg-[#9A91ED] text-white rounded-2xl font-bold hover:bg-[#8B81DF] transition-all flex items-center gap-2 shadow-lg shadow-purple-200/50"
+            >
+              Next Step
+              <ChevronRight size={18} />
+            </button>
+          ) : (
+            <button
+              onClick={() => onComplete(facts)}
+              className="px-10 py-3 bg-emerald-500 text-white rounded-2xl font-bold hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg shadow-emerald-200/50"
+            >
+              Finalize Assessment
+              <CheckCircle2 size={18} />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
