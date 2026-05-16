@@ -4,7 +4,7 @@ export type StudentType = 'Local' | 'International';
 export type IncomeCategory = 'B40' | 'M40' | 'T20' | 'Unknown';
 export type AidNeed = 'Food' | 'Internet' | 'Special Case' | 'Disaster' | 'Scholarship' | 'Counseling' | 'Accommodation' | 'None';
 export type DisasterCaseType = 'Death of Student' | 'Death of Family Member' | 'Serious Accident' | 'Natural Disaster' | 'Fire' | 'None';
-export type FamilyMemberType = 'Mother' | 'Father' | 'Guardian' | 'Child' | 'Other' | 'None';
+export type FamilyMemberType = 'Mother' | 'Father' | 'Guardian' | 'Child' | 'Sibling' | 'Spouse' | 'Other' | 'None';
 export type DocumentStatus = 'Complete' | 'Incomplete' | 'Not Submitted';
 export type ApplicationStatus = 'Submitted' | 'Not Submitted';
 

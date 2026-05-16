@@ -306,6 +306,8 @@ export default function AssessmentWizard({ onComplete, onBack }: WizardProps) {
                             <option value="Father">Father</option>
                             <option value="Guardian">Guardian</option>
                             <option value="Child">Child</option>
+                            <option value="Sibling">Sibling</option>
+                            <option value="Spouse">Spouse</option>
                             <option value="Other">Other</option>
                           </select>
                         </motion.div>

@@ -62,7 +62,7 @@ export function runInference(facts: UserFacts): InferenceResult {
         amount: "RM150 per month for 4 months",
         totalAmount: "RM600",
         explanation: "B40 students with food support needs are eligible for monthly food coupons.",
-        nextAction: ["Submit official application form"]
+        nextAction: ["Submit official application form to TD HEP Office (hep_fsktm@um.edu.my)"]
       }, [8, 10]);
     }
 
@@ -73,7 +73,7 @@ export function runInference(facts: UserFacts): InferenceResult {
         amount: "RM30 per month for 4 months",
         totalAmount: "RM120",
         explanation: "B40 students with internet needs can apply for data subscription aid.",
-        nextAction: ["Submit official application form"]
+        nextAction: ["Submit official application form to TD HEP Office (hep_fsktm@um.edu.my)"]
       }, [8, 11]);
     }
 
@@ -115,7 +115,7 @@ export function runInference(facts: UserFacts): InferenceResult {
                 type: "Manual Review (M40)",
                 priority: "Medium",
                 explanation: "Refer to TD HEP / Deputy Dean Student Affairs Office for manual review. M40 cases may require case-by-case checking.",
-                nextAction: ["Contact TD HEP / Deputy Dean Student Affairs Office"]
+                nextAction: ["Visit TD HEP Office", "Email: hep_fsktm@um.edu.my"]
             }, [14]);
         } else {
             // Rule 15: M40 Student With Emergency Case
@@ -174,7 +174,7 @@ export function runInference(facts: UserFacts): InferenceResult {
     }
 
     if (facts.disasterCaseType === 'Death of Family Member') {
-      const eligibleFamily = ['Mother', 'Father', 'Guardian', 'Child'].includes(facts.familyMemberType);
+      const eligibleFamily = ['Mother', 'Father', 'Guardian', 'Child', 'Sibling', 'Spouse'].includes(facts.familyMemberType);
       if (eligibleFamily) {
         if (facts.supportingDocumentStatus === 'Complete') {
             // Rule 22: Death of Family Member
@@ -201,7 +201,7 @@ export function runInference(facts: UserFacts): InferenceResult {
             type: "Manual Review (Extended Family)",
             priority: "Medium",
             explanation: "Standard disaster category covers mother, father, guardian, or child. Other cases require manual review.",
-            nextAction: ["Contact TD HEP / FSKTM office for special consideration"]
+            nextAction: ["Visit TD HEP Office for special consideration"]
         }, [19, 24]);
       }
     }
@@ -255,7 +255,7 @@ export function runInference(facts: UserFacts): InferenceResult {
                 type: "Manual Review (Disaster)",
                 priority: "Medium",
                 explanation: "Disaster relief for this category usually involves property loss. Manual verification required.",
-                nextAction: ["Contact TD HEP / FSKTM office"]
+                nextAction: ["Contact TD HEP Office (hep_fsktm@um.edu.my)"]
             }, [19, 29]);
         }
     }
@@ -368,7 +368,7 @@ export function runInference(facts: UserFacts): InferenceResult {
         type: "Counseling Referral",
         priority: counselorPriority,
         explanation: explanation,
-        nextAction: ["Contact counseling unit"]
+        nextAction: ["Contact Counseling Unit"]
     }, rules);
   }
 
