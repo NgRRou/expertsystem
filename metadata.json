@@ -1,0 +1,6 @@
+{
+  "name": "FSKTM Student Support Expert System",
+  "description": "An advisory expert system to help FSKTM students identify suitable financial aid and support services based on their eligibility and needs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
