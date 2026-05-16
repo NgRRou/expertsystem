@@ -19,9 +19,10 @@ import { UserFacts, StudentStatus, Programme, StudentType, IncomeCategory, AidNe
 
 interface WizardProps {
   onComplete: (facts: UserFacts) => void;
+  onBack?: () => void;
 }
 
-export default function AssessmentWizard({ onComplete }: WizardProps) {
+export default function AssessmentWizard({ onComplete, onBack }: WizardProps) {
   const [step, setStep] = useState(1);
   const [facts, setFacts] = useState<UserFacts>({
     studentStatus: 'Active',
@@ -45,7 +46,13 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
   });
 
   const nextStep = () => setStep(s => s + 1);
-  const prevStep = () => setStep(s => s - 1);
+  const prevStep = () => {
+    if (step === 1) {
+      onBack?.();
+    } else {
+      setStep(s => s - 1);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -63,6 +70,8 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
       if (e.key === 'Backspace' && !isInput) {
         if (step > 1) {
           prevStep();
+        } else {
+          onBack?.();
         }
       }
     };
@@ -394,14 +403,6 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
                 </div>
               </div>
             </div>
-            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white shrink-0">
-                    <ShieldCheck size={20} />
-                </div>
-                <p className="text-xs font-medium text-emerald-800 leading-relaxed">
-                    Ready to generate your referral. The inference engine will now process your facts against the 48-rule knowledge base.
-                </p>
-            </div>
           </div>
         );
       default:
@@ -440,12 +441,10 @@ export default function AssessmentWizard({ onComplete }: WizardProps) {
       <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
         <button
           onClick={prevStep}
-          disabled={step === 1}
-          className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-colors ${step === 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-400 hover:text-slate-600'
-            }`}
+          className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-colors text-slate-400 hover:text-slate-600"
         >
           <ChevronLeft size={16} />
-          Back
+          {step === 1 ? 'Back to Main' : 'Back'}
         </button>
 
         <div className="flex gap-4">
