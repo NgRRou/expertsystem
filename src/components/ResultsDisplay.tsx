@@ -1,9 +1,8 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   AlertCircle, 
   CheckCircle2, 
-  FileBadge, 
   ExternalLink,
   ShieldCheck,
   ChevronRight,
@@ -12,9 +11,12 @@ import {
   MessageSquare,
   Building2,
   Info,
-  History
+  History,
+  X,
+  Zap
 } from 'lucide-react';
 import { InferenceResult, Recommendation, Priority } from '../types';
+import { RULES_DATA, RuleDefinition } from '../logic/rulesData';
 
 interface ResultsProps {
   result: InferenceResult;
@@ -49,6 +51,8 @@ const getIconForType = (type: string) => {
 };
 
 export default function ResultsDisplay({ result, onReset }: ResultsProps) {
+  const [activeRule, setActiveRule] = useState<RuleDefinition | null>(null);
+
   if (!result.isEligible) {
     return (
       <div className="max-w-2xl mx-auto p-8 bg-white rounded-3xl shadow-xl border border-rose-100 text-center">
@@ -127,6 +131,23 @@ export default function ResultsDisplay({ result, onReset }: ResultsProps) {
                 </ul>
               </div>
 
+              {rec.rulesFired && (
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Expert Reasoning (Click to view rule)</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {rec.rulesFired.map((ruleId, i) => (
+                      <button 
+                        key={i} 
+                        onClick={() => setActiveRule(RULES_DATA[ruleId])}
+                        className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[10px] font-bold border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 transition-colors cursor-help"
+                      >
+                        Rule {ruleId}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {rec.requiredDocuments && (
                 <div className="mt-4 pt-4 border-t border-slate-100">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Required Proof</h4>
@@ -151,26 +172,88 @@ export default function ResultsDisplay({ result, onReset }: ResultsProps) {
               <p className="text-indigo-800 text-sm leading-relaxed">
                 {result.eligibilityMessage}
               </p>
-              <div className="flex flex-wrap gap-3 mt-4">
-                <button 
-                  onClick={() => window.print()}
-                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
-                >
-                  <FileBadge className="w-4 h-4" />
-                  Download Summary (Proof)
-                </button>
-                <button 
-                  onClick={onReset}
-                  className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 rounded-lg text-sm font-medium border border-indigo-200 hover:bg-indigo-50 transition"
-                >
-                  <History className="w-4 h-4" />
-                  New Assessment
-                </button>
-              </div>
             </div>
           </div>
         </div>
+
+        <div className="mt-12 flex justify-center">
+          <button 
+            onClick={onReset}
+            className="flex items-center gap-3 px-10 py-4 bg-slate-800 text-white rounded-2xl font-bold hover:bg-slate-900 transition-all shadow-xl shadow-slate-200 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <History className="w-5 h-5" />
+            Start New Assessment
+          </button>
+        </div>
       </div>
+
+      {/* Rule Modal */}
+      <AnimatePresence>
+        {activeRule && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveRule(null)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-600 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-xl">
+                    <Zap className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Expert Rule {activeRule.id}</h3>
+                    <p className="text-indigo-100 text-xs font-medium uppercase tracking-widest">Forward Chaining Trace</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setActiveRule(null)}
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="p-8 space-y-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-indigo-600">
+                    <div className="px-2 py-0.5 bg-indigo-100 rounded text-[10px] font-black uppercase tracking-tighter">IF</div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Condition met</span>
+                  </div>
+                  <p className="text-slate-700 font-medium text-base leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner italic">
+                    "{activeRule.condition}"
+                  </p>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-emerald-600">
+                    <div className="px-2 py-0.5 bg-emerald-100 rounded text-[10px] font-black uppercase tracking-tighter">THEN</div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Inferred conclusion</span>
+                  </div>
+                  <p className="text-slate-800 font-medium leading-relaxed bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+                    {activeRule.conclusion}
+                  </p>
+                </div>
+              </div>
+              <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button 
+                  onClick={() => setActiveRule(null)}
+                  className="px-6 py-2 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-lg shadow-slate-200"
+                >
+                  Close Trace
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

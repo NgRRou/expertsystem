@@ -40,6 +40,7 @@ export interface Recommendation {
   explanation: string;
   nextAction: string[];
   requiredDocuments?: string[];
+  rulesFired?: number[];
 }
 
 export interface InferenceResult {

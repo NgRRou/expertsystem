@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, RotateCcw } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import AssessmentWizard from './components/AssessmentWizard';
 import ResultsDisplay from './components/ResultsDisplay';
@@ -30,15 +30,6 @@ export default function App() {
             <ShieldCheck className="text-indigo-600" size={24} />
             <span className="text-lg font-bold tracking-tight text-slate-800">FSKTM Student Support</span>
           </div>
-          {view === 'results' && (
-            <button 
-              onClick={reset}
-              className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
-            >
-              <RotateCcw size={16} />
-              Start New Assessment
-            </button>
-          )}
         </div>
       </header>
 
