@@ -10,8 +10,7 @@ Developed for the course **WID2001 Knowledge Representation and Reasoning (Semes
 
 ### 🌍 Sustainable Development Goals (SDG) Alignment
 This project aligns with the following United Nations SDGs:
-*   **SDG 4: Quality Education** – Ensuring that financial barriers do not prevent students from completing their higher education by providing timely access to welfare aid and scholarships.
-*   **SDG 10: Reduced Inequalities** – Promoting social and economic inclusion for B40 and marginalized student groups through an equitable referral system for financial support.
+*   **SDG 1: No Poverty** – Directly assisting B40 and underprivileged students with financial, food, and disaster relief aid to alleviate student economic hardships.
 
 ---
 
@@ -74,10 +73,10 @@ As required by the assignment, the prototype consists of three primary component
 
 ### 👥 Project Roles
 *   **Project Manager:** Thian Xin Yi
-*   **Knowledge Engineer:** Celine Leong, Kueh Zhi Ling
+*   **Knowledge Engineers:** Celine Leong, Kueh Zhi Ling
 *   **Domain Expert:** Madeline Puah Yee Mun
 *   **Programmer:** Ng Rou Rou
-*   **Expected End User:** Chang Yong Qi
+*   **End User:** Chang Yong Qi
 
 ---
 
