@@ -67,7 +67,7 @@ As required by the assignment, the prototype consists of three primary component
     ```bash
     npm run dev
     ```
-5.  Open `http://localhost:5173` in your browser.
+5.  Open `http://localhost:3000` in your browser.
 
 ---
 
