@@ -51,7 +51,7 @@ export default function Hero({ onStart }: HeroProps) {
             <div className="mt-8 flex items-center gap-8 text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Forward Chaining</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">FastAPI + Experta Backend</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
@@ -59,7 +59,7 @@ export default function Hero({ onStart }: HeroProps) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Instant Results</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">React UI Control</span>
               </div>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function Hero({ onStart }: HeroProps) {
                 { step: "03", title: "Recommendation", desc: "Receive a personalized action plan and document checklist." }
               ].map((item, i) => (
                 <div key={i} className="flex gap-6 group">
-                  <div className="text-4xl font-black text-slate-200 group-hover:text-[#9A91ED]/20 transition-colors">{item.step}</div>
+                  <div className="text-4xl font-black text-slate-200 group-hover:text-[#9A91ED]/20 transition-colors w-12 shrink-0">{item.step}</div>
                   <div className="space-y-1">
                     <h4 className="font-bold text-slate-800 text-lg">{item.title}</h4>
                     <p className="text-slate-500 leading-relaxed font-medium">{item.desc}</p>
@@ -94,19 +94,10 @@ export default function Hero({ onStart }: HeroProps) {
           <div className="relative">
             <div className="absolute inset-0 bg-[#9A91ED]/5 blur-[100px] rounded-full" />
             <div className="relative bg-white/40 backdrop-blur-xl border border-white/60 p-10 rounded-[40px] shadow-xl">
-              <p className="text-slate-600 text-lg leading-relaxed font-serif italic mb-8">
+              <p className="text-slate-600 text-lg leading-relaxed font-serif italic">
                 "By analyzing live, current data instead of potentially outdated MAYA portal information,
                 we ensure you get the support you need, when you need it most."
               </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                  <Info className="text-indigo-600" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="font-bold text-slate-800">Precision Screening</p>
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Data Verification</p>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -116,7 +107,7 @@ export default function Hero({ onStart }: HeroProps) {
           <div className="text-center space-y-4">
             <h2 className="text-4xl font-black text-slate-800 tracking-tight">System Architecture</h2>
             <p className="text-slate-500 font-medium max-w-2xl mx-auto">
-              Our expert system is built on a standard tri-component architecture, 
+              Our expert system is built on a standard tri-component architecture,
               powered by a modern, high-performance tech stack.
             </p>
           </div>
@@ -128,9 +119,9 @@ export default function Hero({ onStart }: HeroProps) {
                 <img src="/kb_icon.png" alt="KB" className="w-full h-full object-contain p-1" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2 tracking-tight">Knowledge Base (KB)</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">TypeScript + JSON</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Python + Experta</p>
               <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                The core repository containing 48 expert rules. Encoded via <span className="font-bold text-slate-700">TypeScript Data Structures</span> to ensure high logic precision and easy rule maintenance.
+                The core repository containing 48 expert rules. Encoded via <span className="font-bold text-slate-700">Python Fact objects</span> and strict <span className="font-bold text-slate-700">Experta</span> decorators to ensure high logic precision.
               </p>
             </div>
 
@@ -140,9 +131,9 @@ export default function Hero({ onStart }: HeroProps) {
                 <img src="/ie_icon.png" alt="IE" className="w-full h-full object-contain p-1" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2 tracking-tight">Inference Engine (IE)</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Recursive Logic Engine</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Rete Algorithm Shell</p>
               <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                Our custom-built <span className="font-bold text-slate-700">Forward Chaining</span> algorithm. It recursively scans facts against the KB until all qualifying aid tracks are derived.
+                Our FastAPI backend runs the Experta shell, implementing the highly efficient <span className="font-bold text-slate-700">Rete Algorithm</span> to autonomously match facts against the KB.
               </p>
             </div>
 
@@ -152,9 +143,9 @@ export default function Hero({ onStart }: HeroProps) {
                 <img src="/ui_icon.png" alt="UI" className="w-full h-full object-contain p-1" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2 tracking-tight">User Interface (UI)</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">React + Tailwind + Motion</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">React + Tailwind + FastAPI</p>
               <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                A premium <span className="font-bold text-slate-700">React-based frontend</span>. Uses TailwindCSS for glassmorphism and Motion for smooth, hardware-accelerated transitions.
+                A premium <span className="font-bold text-slate-700">React-based frontend</span>. Communicates with the Python backend via REST API, using TailwindCSS for stunning visual feedback.
               </p>
             </div>
           </div>

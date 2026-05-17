@@ -11,9 +11,21 @@ export default function App() {
   const [view, setView] = useState<'hero' | 'wizard' | 'results'>('hero');
   const [inferenceResult, setInferenceResult] = useState<InferenceResult | null>(null);
 
-  const handleComplete = (facts: UserFacts) => {
-    const result = runInference(facts);
-    setInferenceResult(result);
+  const handleComplete = async (facts: UserFacts) => {
+    try {
+      const response = await fetch('http://localhost:8000/infer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(facts)
+      });
+      if (!response.ok) throw new Error('API Error');
+      const result = await response.json();
+      setInferenceResult(result);
+    } catch (e) {
+      console.warn("Python Experta API unavailable. Falling back to local TypeScript inference.");
+      const result = runInference(facts);
+      setInferenceResult(result);
+    }
     setView('results');
   };
 

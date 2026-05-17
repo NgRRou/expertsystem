@@ -22,25 +22,23 @@ As required by the assignment, the prototype consists of three primary component
     *   Consists of **48 refined IF-THEN rules** derived from an expert interview with En. Ahmad (Representative of Deputy Dean Student Affairs, FSKTM).
     *   Covers domains including B40 Financial Aid, Student Disaster Relief, Scholarship Referrals, Counseling, and Accommodation support.
 2.  **Inference Engine (IE):**
-    *   Utilizes **Forward Chaining** to match user-provided facts (student status, income category, emergency situations) against the knowledge base to derive specific recommendations.
+    *   Utilizes the **Experta Expert System Shell** in a Python backend, implementing the Rete Algorithm for highly efficient, data-driven Forward Chaining.
 3.  **User Interface (UI):**
-    *   A modern, responsive web application built with **React, TypeScript, and Tailwind CSS**.
-    *   Features a multi-step "Assessment Wizard" for accurate data collection and a dynamic results dashboard.
+    *   A modern, responsive web application built with **React, TypeScript, and Tailwind CSS**. Communicates with the Experta engine via a FastAPI REST interface.
 
 ---
 
 ### 🛠️ Technical Implementation
-*   **Frontend Framework:** React 18 (Vite)
-*   **Styling:** Tailwind CSS / Vanilla CSS
-*   **Logic Engine:** Custom TypeScript-based Forward Chaining Engine
-*   **Icons:** Lucide-React
-*   **Animations:** Framer Motion
+*   **Inference Engine:** Python, Experta (Rete Algorithm)
+*   **API Layer:** FastAPI, Uvicorn
+*   **Frontend Framework:** React 18 (Vite), TypeScript
+*   **Styling & UI:** Tailwind CSS, Framer Motion, Lucide-React
 
 ---
 
 ### 📂 Repository Structure
-*   `src/logic/engine.ts`: The core inference engine containing the 48-rule knowledge base.
-*   `src/components/AssessmentWizard.tsx`: The data acquisition module (UI).
+*   `backend.py`: The core Python inference engine containing the 48-rule knowledge base (built with Experta) and FastAPI server.
+*   `src/components/AssessmentWizard.tsx`: The frontend data acquisition module (UI).
 *   `src/components/ResultsDisplay.tsx`: The explanation facility and recommendation output module.
 
 ---
@@ -49,19 +47,28 @@ As required by the assignment, the prototype consists of three primary component
 
 #### Prerequisites
 *   Node.js (v18 or higher)
-*   npm
+*   Python 3.x
+*   npm & pip
 
-#### Installation
-1.  Clone the repository
-2.  Install dependencies:
+#### Installation & Running
+
+1.  Clone the repository and install frontend dependencies:
     ```bash
     npm install
     ```
-3.  Run the development server:
+2.  Install backend dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  Start the Experta Python Backend (Terminal 1):
+    ```bash
+    python backend.py
+    ```
+4.  Start the React Frontend (Terminal 2):
     ```bash
     npm run dev
     ```
-4.  Open `http://localhost:5173` in your browser.
+5.  Open `http://localhost:5173` in your browser.
 
 ---
 
